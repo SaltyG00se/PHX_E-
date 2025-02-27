@@ -1,0 +1,22 @@
+;;examples of setq for excel 
+(setq xlApp (vlax-create-object "Excel.Application"))
+(setq xlWorkbook (vlax-invoke-method xlApp 'Workbooks 'Add))
+(setq xlSheet (vlax-get-property xlWorkbook 'ActiveSheet))
+
+;; Where to start the sorting
+(if ss
+      (progn
+        ;; Store found objects in a list
+        (setq objList nil row 2)  ;; Start writing from row 2 in Excel
+        (repeat (sslength ss)
+          (setq obj (ssname ss (setq i (1+ (or i -1)))))
+          (setq objList (cons obj objList))
+
+;; Input into rows....
+          ;; Write Data to Excel
+          (vlax-invoke-method xlSheet 'Range (strcat "A" (itoa row)) 'Value handle)
+          (vlax-invoke-method xlSheet 'Range (strcat "B" (itoa row)) 'Value objType)
+          (vlax-invoke-method xlSheet 'Range (strcat "C" (itoa row)) 'Value layer)
+          (vlax-invoke-method xlSheet 'Range (strcat "D" (itoa row)) 'Value textVal)
+          (setq row (1+ row))  ;; Move to next row
+        )
